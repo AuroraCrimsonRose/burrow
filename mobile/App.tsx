@@ -1,20 +1,47 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import { View, ActivityIndicator } from 'react-native';
+import AppNavigator from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/auth/AuthContext';
+import { colors } from './src/theme/colors';
+
+const BurrowTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: colors.brandPrimary,
+    background: colors.bgPrimary,
+    card: colors.bgSecondary,
+    text: colors.textPrimary,
+    border: colors.border,
+    notification: colors.brandPrimary,
+  },
+};
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    RPGAwesome: require('./assets/fonts/rpgawesome-webfont.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bgPrimary, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color={colors.brandPrimary} />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer theme={BurrowTheme}>
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+      <StatusBar style="light" />
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

@@ -1,0 +1,60 @@
+{
+  "ice": {
+    "_comment": "ICE servers are provided dynamically by the voice channel. These are documentation defaults only.",
+    "credentialType": "hmac-sha1",
+    "transportPolicy": "all",
+    "iceCandidatePoolSize": 4
+  },
+  "p2p": {
+    "preferred": true,
+    "maxPeers": 4,
+    "fallbackToSFU": true,
+    "directConnectionTimeoutMs": 5000,
+    "srflxPreferred": true
+  },
+  "audio": {
+    "codec": "opus",
+    "bitrate": 64000,
+    "channels": 2,
+    "sampleRate": 48000,
+    "dtx": true,
+    "fec": true,
+    "ptime": 20
+  },
+  "video": {
+    "defaultProfile": {
+      "width": 854,
+      "height": 480,
+      "frameRate": 24,
+      "bitrate": 800000
+    },
+    "maxProfile": {
+      "width": 1280,
+      "height": 720,
+      "frameRate": 30,
+      "bitrate": 2500000
+    },
+    "throttle": {
+      "enabled": true,
+      "probeIntervalMs": 3000,
+      "downscaleThreshold": 0.6,
+      "upscaleThreshold": 0.85,
+      "rampUpSteps": 3,
+      "rampDownImmediate": true,
+      "profiles": [
+        { "height": 360, "frameRate": 15, "bitrate": 400000, "label": "low" },
+        { "height": 480, "frameRate": 24, "bitrate": 800000, "label": "medium" },
+        { "height": 720, "frameRate": 30, "bitrate": 2500000, "label": "high" }
+      ]
+    },
+    "codec": {
+      "preferred": ["VP9", "VP8", "H264"],
+      "h264Profile": "42e01f"
+    },
+    "simulcast": false
+  },
+  "peerConnection": {
+    "bundlePolicy": "max-bundle",
+    "rtcpMuxPolicy": "require"
+  }
+}

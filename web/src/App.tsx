@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useStore, useCustomCSS, useActiveTheme, themeToCSS, DEFAULT_THEME } from './store';
+import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
+import RecoverPage from './pages/RecoverPage';
+import ChatPage from './pages/ChatPage';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function CustomStyleInjector() {
+  const css = useCustomCSS();
+  const theme = useActiveTheme();
+  const themeCss = theme.id !== DEFAULT_THEME.id ? themeToCSS(theme) : '';
+  const combined = [themeCss, css].filter(Boolean).join('\n');
+  if (!combined) return null;
+  return <style dangerouslySetInnerHTML={{ __html: combined }} />;
 }
 
-export default App
+function AuthRoute({ children }: { children: React.ReactNode }) {
+  const { sessionToken } = useStore();
+  if (!sessionToken) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
+function GuestRoute({ children }: { children: React.ReactNode }) {
+  const { sessionToken } = useStore();
+  if (sessionToken) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
+function RegisterWrapper() {
+  const navigate = useNavigate();
+  return <RegisterPage onDone={() => navigate('/')} />;
+}
+
+function LoginWrapper() {
+  const navigate = useNavigate();
+  return <LoginPage onDone={() => navigate('/')} />;
+}
+
+function RecoverWrapper() {
+  const navigate = useNavigate();
+  return <RecoverPage onDone={() => navigate('/')} />;
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <CustomStyleInjector />
+      <Routes>
+        <Route path="/register" element={<GuestRoute><RegisterWrapper /></GuestRoute>} />
+        <Route path="/login" element={<GuestRoute><LoginWrapper /></GuestRoute>} />
+        <Route path="/recover" element={<GuestRoute><RecoverWrapper /></GuestRoute>} />
+        <Route path="/" element={<AuthRoute><ChatPage /></AuthRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

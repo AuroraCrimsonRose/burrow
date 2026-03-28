@@ -1,25 +1,38 @@
-FROM elixir:1.17
+# ── Stage 1: Build ──
+FROM elixir:1.17 AS builder
 
-# Install Hex and Rebar
-RUN mix local.hex --force && \
-    mix local.rebar --force
+RUN mix local.hex --force && mix local.rebar --force
 
-# Set workdir
+ENV MIX_ENV=prod
+
 WORKDIR /app
 
-# Copy dependency manifests first for caching
 COPY mix.exs mix.lock ./
-RUN mix deps.get
+COPY config ./config
+RUN mix deps.get --only prod
 RUN mix deps.compile
 
-# Copy remaining app files
-COPY . .
+COPY lib ./lib
+COPY priv ./priv
 
-# Compile the app
 RUN mix compile
+RUN mix release
 
-# Expose Phoenix port
+# ── Stage 2: Runtime ──
+FROM debian:bookworm-slim AS runtime
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends libstdc++6 openssl libncurses6 locales ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
+ENV LANG=en_US.UTF-8
+
+WORKDIR /app
+
+COPY --from=builder /app/_build/prod/rel/burrow ./
+
 EXPOSE 4000
 
-# Run server on container start
-CMD ["mix", "phx.server"]
+# Entrypoint: run migrations then start server
+CMD /app/bin/burrow eval "Burrow.Release.migrate" && /app/bin/burrow start

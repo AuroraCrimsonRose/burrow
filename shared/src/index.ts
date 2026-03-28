@@ -35,10 +35,10 @@ export interface Server {
 
 export const API_BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://api.burrow.app"
+    ? "https://app.catxhosting.com"
     : "http://localhost:4000";
 
 export const WS_URL =
   process.env.NODE_ENV === "production"
-    ? "wss://api.burrow.app/socket"
-    : "ws://localhost:4000/socket";
+    ? "wss://app.catxhosting.com/gateway"
+    : "ws://localhost:4000/gateway";
