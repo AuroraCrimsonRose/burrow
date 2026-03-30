@@ -37,8 +37,8 @@ jobs:
       - name: Install CocoaPods
         run: cd mobile/ios && pod install
 
-      - name: Select Xcode 16.2
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+      - name: Select Xcode 26.3
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
 
       - name: Build unsigned .app
         run: |
@@ -54,9 +54,7 @@ jobs:
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            SWIFT_STRICT_CONCURRENCY=minimal \
-            SWIFT_VERSION=5.0
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
 
       - name: Create .ipa from archive
         run: |
