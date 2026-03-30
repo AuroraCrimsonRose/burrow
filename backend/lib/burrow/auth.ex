@@ -1019,6 +1019,24 @@ defmodule Burrow.Auth do
     Repo.aggregate(User, :count)
   end
 
+  @doc "Admin: set trust tier on a user."
+  def set_trust_tier(user_id, tier) when tier in 0..5 do
+    user = Repo.get!(User, user_id)
+
+    score = case tier do
+      0 -> 0
+      1 -> 10
+      2 -> 30
+      3 -> 60
+      4 -> 80
+      5 -> 100
+    end
+
+    user
+    |> Ecto.Changeset.change(%{trust_tier: tier, trust_score: score})
+    |> Repo.update()
+  end
+
   @doc "Set or unset is_dev flag on a user. Recalculates trust tier."
   def set_dev(user_id, is_dev) when is_boolean(is_dev) do
     user = Repo.get!(User, user_id)

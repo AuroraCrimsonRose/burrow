@@ -1335,6 +1335,35 @@ export default function SettingsMenu({ user, onClose, onLogout, heatmapDebug, on
                   </div>
                 </div>
                 <div className="settings-group">
+                  <h4>Trust Management</h4>
+                  <div className="settings-row">
+                    <div className="settings-row-info">
+                      <label>Set Trust Tier</label>
+                      <span className="value">Override a user's trust tier (0=New, 1=Verified, 2=Trusted, 3=Established, 4=Veteran, 5=Dev)</span>
+                    </div>
+                  </div>
+                  <div className="settings-row" style={{ gap: '8px' }}>
+                    <input className="settings-input" placeholder="User ID" id="set-trust-user-id" style={{ flex: 1 }} />
+                    <select className="settings-input" id="set-trust-tier" style={{ width: '150px' }}>
+                      <option value="0">0 — New</option>
+                      <option value="1">1 — Verified</option>
+                      <option value="2">2 — Trusted</option>
+                      <option value="3">3 — Established</option>
+                      <option value="4">4 — Veteran</option>
+                      <option value="5">5 — Dev</option>
+                    </select>
+                    <button className="btn-primary btn-sm" onClick={async () => {
+                      const uid = (document.getElementById('set-trust-user-id') as HTMLInputElement)?.value;
+                      const tier = Number((document.getElementById('set-trust-tier') as HTMLSelectElement)?.value);
+                      if (!uid) return;
+                      try {
+                        const res = await api.setTrustTier(uid, tier);
+                        alert(`Trust tier set to ${tier} (${res.tier_name})`);
+                      } catch (e: any) { alert(e.message); }
+                    }}>Set Tier</button>
+                  </div>
+                </div>
+                <div className="settings-group">
                   <h4>Developer Management</h4>
                   <div className="settings-row">
                     <div className="settings-row-info">

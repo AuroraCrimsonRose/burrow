@@ -908,6 +908,13 @@ export async function setDev(userId: string, isDev: boolean) {
   });
 }
 
+export async function setTrustTier(userId: string, tier: number) {
+  return request('/admin/set-trust', {
+    method: 'POST',
+    body: JSON.stringify({ user_id: userId, tier }),
+  });
+}
+
 // ---- Channel Permission Overrides ----
 
 export async function listChannelOverrides(serverId: string, channelId: string) {

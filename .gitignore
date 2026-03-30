@@ -59,3 +59,7 @@ coverage/
 # Misc
 *.tgz
 .cache/
+*.apk
+*.ipa
+*.aab
+generate-icons.mjs

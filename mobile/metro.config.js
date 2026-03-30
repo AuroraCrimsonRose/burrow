@@ -6,6 +6,9 @@ const monorepoRoot = path.resolve(projectRoot, '..');
 
 const config = getDefaultConfig(projectRoot);
 
+// Force absolute project root (critical for monorepo builds)
+config.projectRoot = projectRoot;
+
 // Watch the mobile folder + root node_modules (for hoisted deps)
 config.watchFolders = [monorepoRoot];
 

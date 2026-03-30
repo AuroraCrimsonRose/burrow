@@ -48,6 +48,30 @@ defmodule BurrowWeb.TrustController do
     })
   end
 
+  # POST /api/v1/admin/set-trust — dev-only
+  def set_trust(conn, %{"user_id" => uid_str, "tier" => tier}) when is_integer(tier) do
+    granter = Burrow.Auth.get_user(conn.assigns.current_user_id)
+
+    unless granter && granter.is_dev do
+      conn |> put_status(403) |> json(%{error: "Forbidden"})
+    else
+      user_id = String.to_integer(uid_str)
+
+      case Burrow.Auth.set_trust_tier(user_id, tier) do
+        {:ok, user} ->
+          json(conn, %{
+            ok: true,
+            trust_tier: user.trust_tier,
+            trust_score: user.trust_score,
+            tier_name: Map.get(@tier_names, user.trust_tier, "Unknown")
+          })
+
+        {:error, reason} ->
+          conn |> put_status(422) |> json(%{error: inspect(reason)})
+      end
+    end
+  end
+
   defp tier_server_limit(0), do: 3
   defp tier_server_limit(1), do: 10
   defp tier_server_limit(2), do: 50

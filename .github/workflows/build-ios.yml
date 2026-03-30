@@ -1,0 +1,67 @@
+name: Build iOS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'mobile/**'
+      - 'shared/**'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install mobile-specific deps
+        run: cd mobile && npx expo install --check
+
+      - name: Generate iOS native project
+        run: cd mobile && npx expo prebuild --platform ios --clean
+
+      - name: Install CocoaPods
+        run: cd mobile/ios && pod install
+
+      - name: Build unsigned .app
+        run: |
+          cd mobile/ios
+          xcodebuild \
+            -workspace Burrow.xcworkspace \
+            -scheme Burrow \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination generic/platform=iOS \
+            -archivePath $RUNNER_TEMP/Burrow.xcarchive \
+            archive \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Create .ipa from archive
+        run: |
+          mkdir -p $RUNNER_TEMP/Payload
+          cp -r $RUNNER_TEMP/Burrow.xcarchive/Products/Applications/Burrow.app $RUNNER_TEMP/Payload/
+          cd $RUNNER_TEMP && zip -r Burrow.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Burrow-iOS
+          path: ${{ runner.temp }}/Burrow.ipa
+          retention-days: 30

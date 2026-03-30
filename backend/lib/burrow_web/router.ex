@@ -111,6 +111,7 @@ defmodule BurrowWeb.Router do
 
     # Admin (dev-only)
     post "/admin/set-dev", BadgeController, :set_dev
+    post "/admin/set-trust", TrustController, :set_trust
 
     # Nested under server
     scope "/servers/:server_id" do

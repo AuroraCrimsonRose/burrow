@@ -62,7 +62,7 @@ defmodule BurrowWeb.MessageController do
         with :ok <- if(has_content, do: check_embed_links(content, sid, user_id, cid), else: :ok),
              :ok <- if(has_content, do: check_mention_everyone(content, sid, user_id, cid), else: :ok),
              :ok <- if(has_content, do: check_no_links_if_tier0(content, conn.assigns[:current_trust_tier] || 0), else: :ok),
-             {:ok, message} <- Chat.send_message(cid, user_id, params) do
+             {:ok, message} <- Chat.send_message(cid, user_id, Map.put_new(params, "content", "")) do
           nicknames = Communities.get_member_nicknames(sid, [user_id])
           conn
           |> put_status(:created)
