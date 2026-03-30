@@ -28,8 +28,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install mobile-specific deps
-        run: cd mobile && npx expo install --check
+      - name: Fix mobile dependency versions
+        run: cd mobile && npx expo install --fix
 
       - name: Generate iOS native project
         run: cd mobile && npx expo prebuild --platform ios --clean
