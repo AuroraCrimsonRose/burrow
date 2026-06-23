@@ -32,13 +32,3 @@ export interface Server {
   ownerId: string;
   channels: Channel[];
 }
-
-export const API_BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://app.catxhosting.com"
-    : "http://localhost:4000";
-
-export const WS_URL =
-  process.env.NODE_ENV === "production"
-    ? "wss://app.catxhosting.com/gateway"
-    : "ws://localhost:4000/gateway";
