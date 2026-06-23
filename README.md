@@ -7,6 +7,9 @@ The project includes groundwork for web and mobile clients, real-time messaging,
 A running version of the platform can be accessed here:
 https://app.catxhosting.com/
 
+Official Burrow join code from the main interface.
+```WtaAWPQ4```
+
 ## Features
 
 * Real-time messaging
