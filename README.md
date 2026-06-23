@@ -4,6 +4,9 @@ Burrow is an abandoned communication platform inspired by applications such as D
 
 The project includes groundwork for web and mobile clients, real-time messaging, voice communication, video streaming, and account synchronization. Burrow was designed around the idea that users should not be required to provide personal information such as email addresses or phone numbers simply to communicate online.
 
+A running version of the platform can be accessed here:
+https://app.catxhosting.com/
+
 ## Features
 
 * Real-time messaging
