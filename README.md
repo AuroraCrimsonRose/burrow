@@ -7,8 +7,23 @@ The project includes groundwork for web and mobile clients, real-time messaging,
 A running version of the platform can be accessed here:
 https://app.catxhosting.com/
 
-Official Burrow join code from the main interface.
-```WtaAWPQ4```
+## Access
+
+Official Burrow join code (from the main interface):
+
+WtaAWPQ4
+
+## Notes on access control
+
+Burrow includes automated anti-spam and trust-tier systems that restrict certain actions for new accounts.
+
+Depending on your trust tier, you may experience temporary limitations such as:
+
+- Delayed ability to join existing Burrows (up to ~10 minutes)
+- Restrictions on creating new Burrows until trust is increased
+- Gradual permission unlocks based on activity such as messaging and normal usage
+
+These systems are intended to reduce spam and bot activity while allowing legitimate users to naturally gain access over time.
 
 ## Features
 
